@@ -214,10 +214,15 @@ function renderPodium(sorted){
 function renderRankTable(sorted){
   const tb=document.getElementById('rankBody');
   let html='';
+  let rank=0,prevScore=null;
   sorted.forEach((tm,i)=>{
-    const rc=i<3?'top'+(i+1):'';
+    if(prevScore===null||tm.score!==prevScore){
+      rank=i+1;
+      prevScore=tm.score;
+    }
+    const rc=rank<=3?'top'+rank:'';
     html+=`<tr>
-      <td class="r-num ${rc}">${i+1}</td>
+      <td class="r-num ${rc}">${rank}</td>
       <td class="r-team">${tn(tm.id)}</td>
       <td class="r-wdl"><span class="w">${tm.wins}${t('wins')}</span> <span class="d">${tm.draws}${t('draws')}</span> <span class="l">${tm.losses}${t('losses')}</span></td>
       <td class="r-score ${rc}">${tm.score}</td>
