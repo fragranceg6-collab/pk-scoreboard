@@ -91,13 +91,13 @@ header{flex-direction:column;gap:12px;text-align:center}
 <div class="wrap">
   <header>
     <div class="h-title">
-      <h1><span class="trophy">🏆</span><span data-i18n="scoreboardTitle">PK计分大屏</span></h1>
+      <h1><span class="trophy">🏆</span><span data-i18n="scoreboardTitle">Summer Sports Night: Ignite Your Orientation</span></h1>
       <div class="h-sub"><span class="dot"></span><span data-i18n="scoreboardSub">实时排行榜</span> · <span data-i18n="lastUpdated">最后更新</span>: <span id="updTime">--</span></div>
     </div>
     <div class="h-actions">
       <div class="nav-links">
         <a href="input.html">📝 <span data-i18n="goToInput">去录入</span></a>
-        <a href="detail.html">📊 <span data-i18n="viewDetails">查看明细</span></a>
+        <a href="detail.html">📊 <span data-i18n="viewDetails">查看详细比分</span></a>
       </div>
       <button class="lang-btn" id="langBtn">🌐 <span id="langLabel">English</span></button>
     </div>
@@ -138,15 +138,15 @@ const POLL=30000;
 // ===== I18N =====
 let LANG=localStorage.getItem('pk-lang')||'zh';
 const T={
-zh:{scoreboardTitle:'PK计分大屏',scoreboardSub:'实时排行榜',lastUpdated:'最后更新',goToInput:'去录入',viewDetails:'查看明细',fullRanking:'完整排名',stationMatches:'站点对阵',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',rank:'#',team:'队伍',record:'战绩',score:'积分',champion:'冠军',runnerUp:'亚军',thirdPlace:'季军',wins:'胜',draws:'平',losses:'负',noMatch:'等待录入',win:'胜',draw:'平局',matchCount:'场',refreshed:'数据已刷新',langLabel:'English',stationName:id=>id+'号站',teamName:id=>id+'队',timeAgo:s=>s+'秒前'},
-en:{scoreboardTitle:'PK Scoreboard',scoreboardSub:'Real-time Leaderboard',lastUpdated:'Updated',goToInput:'Input',viewDetails:'Details',fullRanking:'Full Ranking',stationMatches:'Station Matches',footerNote:'Auto-refresh every 30s · kvdb.io cloud',rank:'#',team:'Team',record:'Record',score:'Pts',champion:'Champion',runnerUp:'Runner-up',thirdPlace:'3rd Place',wins:'W',draws:'D',losses:'L',noMatch:'Awaiting',win:'Win',draw:'Draw',matchCount:'matches',refreshed:'Refreshed',langLabel:'中文',stationName:id=>'Station '+id,teamName:id=>'Team '+id,timeAgo:s=>s+'s ago'}
+zh:{scoreboardTitle:'Summer Sports Night: Ignite Your Orientation',scoreboardSub:'实时排行榜',lastUpdated:'最后更新',goToInput:'去录入',viewDetails:'查看详细比分',fullRanking:'完整排名',stationMatches:'站点对阵',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',rank:'#',team:'队伍',record:'战绩',score:'积分',champion:'冠军',runnerUp:'亚军',thirdPlace:'季军',wins:'胜',draws:'平',losses:'负',noMatch:'等待录入',win:'胜',draw:'平局',matchCount:'场',refreshed:'数据已刷新',langLabel:'English',stationName:id=>id+'号站',teamName:id=>id+'队',timeAgo:s=>s+'秒前'},
+en:{scoreboardTitle:'Summer Sports Night: Ignite Your Orientation',scoreboardSub:'Real-time Leaderboard',lastUpdated:'Updated',goToInput:'Input',viewDetails:'Detailed Scores',fullRanking:'Full Ranking',stationMatches:'Station Matches',footerNote:'Auto-refresh every 30s · kvdb.io cloud',rank:'#',team:'Team',record:'Record',score:'Pts',champion:'Champion',runnerUp:'Runner-up',thirdPlace:'3rd Place',wins:'W',draws:'D',losses:'L',noMatch:'Awaiting',win:'Win',draw:'Draw',matchCount:'matches',refreshed:'Refreshed',langLabel:'中文',stationName:id=>'Station '+id,teamName:id=>'Team '+id,timeAgo:s=>s+'s ago'}
 };
 function t(k){const v=T[LANG][k];return typeof v==='function'?v:v||k}
 function tn(id){return T[LANG].teamName(id)}
 function sn(id){return T[LANG].stationName(id)}
 
 function toggleLang(){LANG=LANG==='zh'?'en':'zh';localStorage.setItem('pk-lang',LANG);applyI18n();render()}
-function applyI18n(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});document.getElementById('langLabel').textContent=t('langLabel');document.title=LANG==='zh'?'PK计分大屏':'PK Scoreboard'}
+function applyI18n(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});document.getElementById('langLabel').textContent=t('langLabel');document.title='Summer Sports Night: Ignite Your Orientation'}
 
 // ===== DATA =====
 function getDefault(){
