@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分数录入</title>
+<style>
+:root{--bd:#0a1e5c;--bm:#1a3a8c;--gd:#075c30;--gm:#0a8c4a;--gl:#1ddb7a;--w:#fff;--gf:#ffd700;--gb:rgba(255,255,255,.1);--gbr:rgba(255,255,255,.2);--tl:#fff;--td:rgba(255,255,255,.7);--rd:rgba(255,60,60,.85);--gn:rgba(29,219,122,.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 25%,rgba(29,219,122,.12) 0%,transparent 50%),radial-gradient(circle at 85% 75%,rgba(10,30,92,.25) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:20px 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:16px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);margin-bottom:24px}
+.h-title h1{font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.h-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.lang-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gbr);background:rgba(255,255,255,.05);color:var(--tl);cursor:pointer;font-size:.85rem;transition:all .2s}
+.lang-btn:hover{background:rgba(255,255,255,.15)}
+.nav-links{display:flex;gap:8px}
+.nav-links a{padding:6px 14px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--tl);text-decoration:none;font-size:.85rem;border:1px solid var(--gbr);transition:all .2s;display:flex;align-items:center;gap:4px}
+.nav-links a:hover{background:rgba(255,255,255,.2)}
+/* Section Label */
+.section-label{font-size:1rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+/* Station Selector */
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:24px}
+.st-btn{padding:14px;border-radius:12px;background:var(--gb);backdrop-filter:blur(12px);border:2px solid var(--gbr);color:var(--tl);cursor:pointer;text-align:center;transition:all .2s;font-size:1rem;font-weight:700}
+.st-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+.st-btn.active{background:rgba(29,219,122,.15);border-color:var(--gl);box-shadow:0 0 12px rgba(29,219,122,.2)}
+/* Team Selector */
+.team-select-section{display:none;margin-bottom:24px}
+.team-select-section.visible{display:block}
+.team-select-row{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.team-select-row label{font-size:.9rem;font-weight:600;min-width:80px}
+.team-select-row select{flex:1;padding:10px 14px;border-radius:12px;background:var(--gb);backdrop-filter:blur(12px);border:2px solid var(--gbr);color:var(--tl);font-size:.95rem;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none}
+.team-select-row select:focus{border-color:var(--gl)}
+.team-select-row select option{background:#0a1e5c;color:#fff;padding:8px}
+.team-vs-divider{display:flex;align-items:center;justify-content:center;gap:12px;padding:10px;margin-bottom:12px;border-radius:10px;background:rgba(255,215,0,.08)}
+.team-vs-divider .vs-badge{font-size:.9rem;padding:4px 10px;border-radius:10px;background:rgba(255,215,0,.2);color:var(--gf);font-weight:700}
+.same-team-warning{background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.3);border-radius:10px;padding:10px;text-align:center;color:#ff6b6b;font-size:.85rem;margin-bottom:12px}
+/* Match Info */
+.match-info{padding:20px;border-radius:16px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);margin-bottom:20px;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.match-info.empty{color:var(--td);font-size:.9rem}
+.match-vs{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
+.match-vs .team-box{font-size:1.3rem;font-weight:700}
+.match-vs .vs-badge{font-size:.9rem;padding:4px 10px;border-radius:10px;background:rgba(255,215,0,.2);color:var(--gf);font-weight:700}
+.match-station{font-size:.8rem;color:var(--td);margin-bottom:8px}
+/* Result Selector */
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.res-btn{padding:16px;border-radius:14px;background:var(--gb);backdrop-filter:blur(12px);border:2px solid var(--gbr);color:var(--tl);cursor:pointer;text-align:center;transition:all .2s}
+.res-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.res-btn.active-win{background:rgba(29,219,122,.15);border-color:var(--gl)}
+.res-btn.active-draw{background:rgba(255,183,77,.15);border-color:#ffb74d}
+.res-btn.active-loss{background:rgba(255,60,60,.15);border-color:var(--rd)}
+.res-btn .res-label{font-size:1rem;font-weight:700;margin-bottom:4px}
+.res-btn .res-pts{font-size:.75rem;color:var(--td)}
+.res-btn .res-pts.win-pts{color:var(--gn)}
+.res-btn .res-pts.draw-pts{color:#ffb74d}
+.res-btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+/* Submit */
+.submit-btn{width:100%;padding:16px;border-radius:14px;background:linear-gradient(135deg,var(--gm),var(--gl));color:#fff;font-size:1.1rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,219,122,.3)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:12px;font-size:.85rem;z-index:1000;transition:transform .3s;backdrop-filter:blur(12px)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:rgba(29,219,122,.9);color:#fff}.toast.error{background:rgba(255,60,60,.9);color:#fff}
+footer{text-align:center;padding:12px;font-size:.7rem;color:var(--td)}
+@media(max-width:640px){
+header{flex-direction:column;gap:12px;text-align:center}
+.h-actions{justify-content:center;flex-wrap:wrap}
+.st-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.team-select-row{flex-direction:column;gap:6px}
+.team-select-row label{min-width:auto}
+.result-grid{grid-template-columns:1fr;gap:8px}
+.match-vs .team-box{font-size:1.1rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="h-title"><h1>📝 <span data-i18n="inputTitle">分数录入</span></h1></div>
+    <div class="h-actions">
+      <div class="nav-links">
+        <a href="index.html">🏠 <span data-i18n="backToBoard">返回大屏</span></a>
+        <a href="detail.html">📊 <span data-i18n="viewDetails">查看明细</span></a>
+      </div>
+      <button class="lang-btn" id="langBtn">🌐 <span id="langLabel">English</span></button>
+    </div>
+  </header>
+
+  <!-- Step 1: Select Station -->
+  <div class="section-label">📍 <span data-i18n="selectStation">请选择站点</span></div>
+  <div class="st-grid" id="stGrid"></div>
+
+  <!-- Step 2: Select Teams -->
+  <div class="team-select-section" id="teamSection">
+    <div class="section-label">👥 <span data-i18n="selectTeams">请选择比拼队伍</span></div>
+    <div class="team-select-row">
+      <label data-i18n="teamALabel">队伍 A：</label>
+      <select id="teamASelect"></select>
+    </div>
+    <div class="team-vs-divider">
+      <span class="vs-badge">VS</span>
+    </div>
+    <div class="team-select-row">
+      <label data-i18n="teamBLabel">队伍 B：</label>
+      <select id="teamBSelect"></select>
+    </div>
+    <div class="same-team-warning" id="sameTeamWarning" style="display:none">
+      <span data-i18n="sameTeamWarning">⚠️ 两支队伍不能相同，请重新选择</span>
+    </div>
+  </div>
+
+  <!-- Match Info Preview -->
+  <div class="match-info empty" id="matchInfo">
+    <span data-i18n="selectStationHint">点击上方站点开始录入</span>
+  </div>
+
+  <!-- Step 3: Select Result -->
+  <div class="section-label" id="resultLabel" style="display:none">⚽ <span data-i18n="selectResult">请选择比赛结果</span></div>
+  <div class="result-grid" id="resultGrid" style="display:none"></div>
+
+  <!-- Submit -->
+  <button class="submit-btn" id="submitBtn" style="display:none" data-action="submit">
+    ✅ <span data-i18n="submit">确认提交</span>
+  </button>
+
+  <footer><span data-i18n="footerNote">数据同步至 kvdb.io 云端存储</span></footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== CONFIG =====
+const KVDB='https://kvdb.io/6e4nxh1KpHpJjHUZT3h5vx/pk_scoreboard';
+const TOTAL_STATIONS=11;
+const TOTAL_TEAMS=22;
+
+// ===== I18N =====
+let LANG=localStorage.getItem('pk-lang')||'zh';
+const T={
+zh:{inputTitle:'分数录入',backToBoard:'返回大屏',viewDetails:'查看明细',selectStation:'请选择站点',selectTeams:'请选择比拼队伍',teamALabel:'队伍 A：',teamBLabel:'队伍 B：',selectStationHint:'点击上方站点开始录入',selectTeamsHint:'请选择两支比拼队伍',selectResult:'请选择比赛结果',drawLabel:'平局',pts3:'+3分',pts1:'各+1分',submit:'确认提交',submitting:'提交中...',submitSuccess:'✅ 分数提交成功！',submitError:'提交失败，请重试',selectStationFirst:'请先选择站点',selectTeamsFirst:'请选择两支队伍',sameTeamWarning:'⚠️ 两支队伍不能相同，请重新选择',selectResultFirst:'请选择比赛结果',langLabel:'English',footerNote:'数据同步至 kvdb.io 云端存储',stationName:id=>id+'号站',teamName:id=>id+'队',teamWins:id=>id+'队胜',placeholderA:'— 选择队伍A —',placeholderB:'— 选择队伍B —'},
+en:{inputTitle:'Score Input',backToBoard:'Board',viewDetails:'Details',selectStation:'Select Station',selectTeams:'Select Teams',teamALabel:'Team A：',teamBLabel:'Team B：',selectStationHint:'Click a station above to start',selectTeamsHint:'Select two competing teams',selectResult:'Select Result',drawLabel:'Draw',pts3:'+3 pts',pts1:'+1 each',submit:'Submit',submitting:'Submitting...',submitSuccess:'✅ Score submitted!',submitError:'Failed, please retry',selectStationFirst:'Please select a station',selectTeamsFirst:'Please select two teams',sameTeamWarning:'⚠️ Two teams must be different',selectResultFirst:'Please select a result',langLabel:'中文',footerNote:'Data synced to kvdb.io cloud',stationName:id=>'Station '+id,teamName:id=>'Team '+id,teamWins:id=>'Team '+id+' Wins',placeholderA:'— Select Team A —',placeholderB:'— Select Team B —'}
+};
+function t(k){const v=T[LANG][k];return typeof v==='function'?v:v||k}
+function tn(id){return T[LANG].teamName(id)}
+function sn(id){return T[LANG].stationName(id)}
+
+function toggleLang(){LANG=LANG==='zh'?'en':'zh';localStorage.setItem('pk-lang',LANG);applyI18n();renderStations();renderTeamDropdowns();renderMatchInfo()}
+function applyI18n(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});document.getElementById('langLabel').textContent=t('langLabel');document.title=LANG==='zh'?'分数录入':'Score Input'}
+
+// ===== DATA =====
+function getDefault(){
+  return{teams:Array.from({length:TOTAL_TEAMS},(_,i)=>({id:i+1,score:0,wins:0,draws:0,losses:0})),
+  stations:Array.from({length:TOTAL_STATIONS},(_,i)=>({id:i+1})),
+  matches:[],updatedAt:Date.now()}
+}
+function compute(d){
+  d.teams.forEach(tm=>{tm.score=0;tm.wins=0;tm.draws=0;tm.losses=0});
+  d.matches.forEach(m=>{
+    const a=d.teams.find(tm=>tm.id===m.team1Id),b=d.teams.find(tm=>tm.id===m.team2Id);
+    if(!a||!b)return;
+    if(m.result==='team1'){a.wins++;a.score+=3;b.losses++}
+    else if(m.result==='team2'){b.wins++;b.score+=3;a.losses++}
+    else{a.draws++;a.score+=1;b.draws++;b.score+=1}
+  })
+}
+async function fetchCloud(){
+  try{const r=await fetch(KVDB);if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
+}
+async function pushCloud(d){d.updatedAt=Date.now();compute(d);try{const r=await fetch(KVDB,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok}catch(e){return false}}
+
+async function submitScore(stationId,team1Id,team2Id,result){
+  const c=await fetchCloud();
+  let d=c&&c.teams&&c.matches?c:getDefault();
+  d.matches.push({id:Date.now()+'-'+Math.random().toString(36).substr(2,9),stationId,team1Id,team2Id,result,timestamp:Date.now()});
+  const ok=await pushCloud(d);
+  return{success:ok,data:d}
+}
+
+// ===== STATE =====
+let selectedStationId=null,selectedTeamA=null,selectedTeamB=null,selectedResult=null;
+
+// ===== RENDER =====
+function renderStations(){
+  const g=document.getElementById('stGrid');
+  let html='';
+  for(let i=1;i<=TOTAL_STATIONS;i++){
+    const active=selectedStationId===i?'active':'';
+    html+=`<button class="st-btn ${active}" data-station-id="${i}">${sn(i)}</button>`
+  }
+  g.innerHTML=html
+}
+
+function renderTeamDropdowns(){
+  const selA=document.getElementById('teamASelect');
+  const selB=document.getElementById('teamBSelect');
+  let optA=`<option value="">${t('placeholderA')}</option>`;
+  let optB=`<option value="">${t('placeholderB')}</option>`;
+  for(let i=1;i<=TOTAL_TEAMS;i++){
+    optA+=`<option value="${i}" ${selectedTeamA===i?'selected':''}>${tn(i)}</option>`;
+    optB+=`<option value="${i}" ${selectedTeamB===i?'selected':''}>${tn(i)}</option>`
+  }
+  selA.innerHTML=optA;
+  selB.innerHTML=optB;
+  // Restore selections if already made
+  if(selectedTeamA)selA.value=selectedTeamA;
+  if(selectedTeamB)selB.value=selectedTeamB
+}
+
+function renderMatchInfo(){
+  const mi=document.getElementById('matchInfo');
+  const ts=document.getElementById('teamSection');
+
+  if(!selectedStationId){
+    mi.className='match-info empty';
+    mi.innerHTML=`<span data-i18n="selectStationHint">${t('selectStationHint')}</span>`;
+    ts.classList.remove('visible');
+    document.getElementById('resultLabel').style.display='none';
+    document.getElementById('resultGrid').style.display='none';
+    document.getElementById('submitBtn').style.display='none';
+    return
+  }
+
+  // Show team selection section
+  ts.classList.add('visible');
+
+  // Check if both teams selected and not same
+  const bothSelected=selectedTeamA&&selectedTeamB;
+  const sameTeam=selectedTeamA&&selectedTeamB&&selectedTeamA===selectedTeamB;
+  const warning=document.getElementById('sameTeamWarning');
+
+  if(sameTeam){
+    warning.style.display='block';
+    mi.className='match-info empty';
+    mi.innerHTML=`<span data-i18n="sameTeamWarning">${t('sameTeamWarning')}</span>`;
+    document.getElementById('resultLabel').style.display='none';
+    document.getElementById('resultGrid').style.display='none';
+    document.getElementById('submitBtn').style.display='none';
+    return
+  }
+  warning.style.display='none';
+
+  if(!bothSelected){
+    mi.className='match-info empty';
+    mi.innerHTML=`<span data-i18n="selectTeamsHint">${t('selectTeamsHint')}</span>`;
+    document.getElementById('resultLabel').style.display='none';
+    document.getElementById('resultGrid').style.display='none';
+    document.getElementById('submitBtn').style.display='none';
+    return
+  }
+
+  // Both teams selected and different - show match info
+  mi.className='match-info';
+  mi.innerHTML=`<div class="match-station">${sn(selectedStationId)}</div>
+    <div class="match-vs"><span class="team-box">${tn(selectedTeamA)}</span>
+    <span class="vs-badge">VS</span>
+    <span class="team-box">${tn(selectedTeamB)}</span></div>`;
+  document.getElementById('resultLabel').style.display='flex';
+  document.getElementById('resultGrid').style.display='grid';
+  document.getElementById('submitBtn').style.display='flex';
+  renderResultBtns()
+}
+
+function renderResultBtns(){
+  if(!selectedTeamA||!selectedTeamB||selectedTeamA===selectedTeamB)return;
+  const rg=document.getElementById('resultGrid');
+  const btns=[
+    {val:'team1',label:tn(selectedTeamA)+' '+t('teamWins')(selectedTeamA).replace(tn(selectedTeamA),'').trim()||T[LANG].teamWins(selectedTeamA),pts:t('pts3'),cls:'active-win'},
+    {val:'draw',label:t('drawLabel'),pts:t('pts1'),cls:'active-draw'},
+    {val:'team2',label:tn(selectedTeamB)+' '+t('teamWins')(selectedTeamB).replace(tn(selectedTeamB),'').trim()||T[LANG].teamWins(selectedTeamB),pts:t('pts3'),cls:'active-loss'}
+  ];
+  let html='';
+  btns.forEach(b=>{
+    const active=selectedResult===b.val?b.cls:'';
+    html+=`<button class="res-btn ${active}" data-result="${b.val}">
+      <div class="res-label">${b.label}</div>
+      <div class="res-pts ${b.val==='draw'?'draw-pts':'win-pts'}">${b.pts}</div>
+    </button>`
+  });
+  rg.innerHTML=html
+}
+
+function selectResult(val){selectedResult=val;renderResultBtns()}
+
+async function handleSubmit(){
+  if(!selectedStationId){showToast(t('selectStationFirst'),'error');return}
+  if(!selectedTeamA||!selectedTeamB){showToast(t('selectTeamsFirst'),'error');return}
+  if(selectedTeamA===selectedTeamB){showToast(t('sameTeamWarning'),'error');return}
+  if(!selectedResult){showToast(t('selectResultFirst'),'error');return}
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.innerHTML=`⏳ <span data-i18n="submitting">${t('submitting')}</span>`;
+  try{
+    const r=await submitScore(selectedStationId,selectedTeamA,selectedTeamB,selectedResult);
+    if(r.success){showToast(t('submitSuccess'),'success');selectedResult=null;renderResultBtns()}
+    else{showToast(t('submitError'),'error')}
+  }catch(e){showToast(t('submitError'),'error')}
+  finally{btn.disabled=false;btn.innerHTML=`✅ <span data-i18n="submit">${t('submit')}</span>`}
+}
+
+// ===== TOAST =====
+function showToast(msg,type='success'){
+  const el=document.getElementById('toast');el.textContent=msg;el.className='toast '+type+' show';
+  setTimeout(()=>{el.classList.remove('show')},2500)
+}
+
+// ===== EVENT BINDING =====
+document.getElementById('langBtn').addEventListener('click',()=>toggleLang());
+document.getElementById('stGrid').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-station-id]');
+  if(!btn)return;
+  selectedStationId=parseInt(btn.dataset.stationId);
+  selectedResult=null;
+  renderStations();renderTeamDropdowns();renderMatchInfo()
+});
+document.getElementById('teamASelect').addEventListener('change',e=>{
+  selectedTeamA=e.target.value?parseInt(e.target.value):null;
+  selectedResult=null;
+  renderMatchInfo()
+});
+document.getElementById('teamBSelect').addEventListener('change',e=>{
+  selectedTeamB=e.target.value?parseInt(e.target.value):null;
+  selectedResult=null;
+  renderMatchInfo()
+});
+document.getElementById('resultGrid').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-result]');
+  if(!btn)return;
+  selectResult(btn.dataset.result)
+});
+document.getElementById('submitBtn').addEventListener('click',()=>handleSubmit());
+
+// ===== INIT =====
+applyI18n();renderStations()
+</script>
+</body>
+</html>

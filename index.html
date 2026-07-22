@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PK计分大屏</title>
+<style>
+:root{--bd:#0a1e5c;--bm:#1a3a8c;--gd:#075c30;--gm:#0a8c4a;--gl:#1ddb7a;--w:#fff;--gf:#ffd700;--sf:#c0c0c0;--bf:#cd7f32;--gb:rgba(255,255,255,.1);--gbr:rgba(255,255,255,.2);--tl:#fff;--td:rgba(255,255,255,.7);--rd:rgba(255,60,60,.85);--gn:rgba(29,219,122,.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 25%,rgba(29,219,122,.12) 0%,transparent 50%),radial-gradient(circle at 85% 75%,rgba(10,30,92,.25) 0%,transparent 50%),repeating-linear-gradient(45deg,transparent,transparent 60px,rgba(255,255,255,.02) 60px,rgba(255,255,255,.02) 61px);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:20px 16px}
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:16px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);margin-bottom:24px}
+.h-title{flex:1}
+.h-title h1{font-size:1.8rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.h-title h1 .trophy{font-size:1.6rem}
+.h-sub{font-size:.85rem;color:var(--td);margin-top:4px;display:flex;align-items:center;gap:8px}
+.h-sub .dot{width:6px;height:6px;border-radius:50%;background:var(--gl);display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.h-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.lang-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gbr);background:rgba(255,255,255,.05);color:var(--tl);cursor:pointer;font-size:.85rem;transition:all .2s}
+.lang-btn:hover{background:rgba(255,255,255,.15)}
+.nav-links{display:flex;gap:8px}
+.nav-links a{padding:6px 14px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--tl);text-decoration:none;font-size:.85rem;border:1px solid var(--gbr);transition:all .2s;display:flex;align-items:center;gap:4px}
+.nav-links a:hover{background:rgba(255,255,255,.2)}
+/* Podium */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:16px;padding:40px 0 20px;margin-bottom:28px}
+.p-card{border-radius:16px;background:var(--gb);backdrop-filter:blur(12px);border:2px solid var(--gbr);padding:20px 24px;text-align:center;transition:all .3s;min-width:140px}
+.p-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.p-2{order:1}.p-1{order:2}.p-3{order:3}
+.p-1 .p-card{padding:28px 32px;border-color:rgba(255,215,0,.5);box-shadow:0 0 30px rgba(255,215,0,.15);min-width:180px}
+.p-1 .p-medal{font-size:2.2rem;color:var(--gf)}
+.p-2 .p-medal{font-size:1.6rem;color:var(--sf)}.p-3 .p-medal{font-size:1.4rem;color:var(--bf)}
+.p-medal{margin-bottom:8px}
+.p-name{font-size:1.2rem;font-weight:700;margin-bottom:4px}
+.p-1 .p-name{font-size:1.4rem}
+.p-score{font-size:2rem;font-weight:800;margin-bottom:8px}
+.p-1 .p-score{font-size:2.5rem;color:var(--gf)}
+.p-2 .p-score{color:var(--sf)}.p-3 .p-score{color:var(--bf)}
+.p-stat{font-size:.75rem;color:var(--td)}
+.p-empty{display:none}
+/* Ranking Table */
+.section-title{font-size:1.1rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section-title .icon{font-size:1rem}
+.rank-section{margin-bottom:28px}
+.rank-table{width:100%;border-radius:12px;overflow:hidden;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr)}
+.rank-table table{width:100%;border-collapse:collapse}
+.rank-table th{padding:10px 12px;font-size:.8rem;color:var(--td);text-align:left;border-bottom:1px solid rgba(255,255,255,.1);font-weight:600}
+.rank-table td{padding:10px 12px;font-size:.9rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.rank-table tr:last-child td{border-bottom:none}
+.rank-table tr:hover td{background:rgba(255,255,255,.05)}
+.r-num{width:40px;text-align:center;font-weight:700;color:var(--td)}
+.r-num.top1{color:var(--gf)}.r-num.top2{color:var(--sf)}.r-num.top3{color:var(--bf)}
+.r-team{font-weight:600}
+.r-wdl{color:var(--td);font-size:.8rem}
+.r-wdl .w{color:var(--gn)}.r-wdl .d{color:#ffb74d}.r-wdl .l{color:var(--rd)}
+.r-score{font-weight:800;font-size:1.1rem;text-align:center}
+.r-score.top1{color:var(--gf)}.r-score.top2{color:var(--sf)}.r-score.top3{color:var(--bf)}
+/* Station Cards */
+.stations-section{margin-bottom:20px}
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.st-card{border-radius:12px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);padding:14px;text-align:center;transition:all .2s;cursor:default}
+.st-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.st-name{font-size:.75rem;color:var(--td);margin-bottom:6px;font-weight:600}
+.st-vs{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.85rem;font-weight:600;margin-bottom:6px}
+.st-vs .vs-badge{font-size:.6rem;padding:2px 6px;border-radius:8px;background:rgba(255,215,0,.2);color:var(--gf);font-weight:700}
+.st-result{font-size:.8rem;font-weight:600;margin-bottom:4px}
+.st-result.win{color:var(--gn)}.st-result.draw{color:#ffb74d}.st-result.none{color:var(--td)}
+.st-count{font-size:.7rem;color:var(--td)}
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:12px;font-size:.85rem;z-index:1000;transition:transform .3s;backdrop-filter:blur(12px)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:rgba(29,219,122,.9);color:#fff}.toast.error{background:rgba(255,60,60,.9);color:#fff}
+/* Footer */
+footer{text-align:center;padding:12px;font-size:.7rem;color:var(--td)}
+/* Responsive */
+@media(max-width:640px){
+header{flex-direction:column;gap:12px;text-align:center}
+.h-actions{justify-content:center}
+.podium{gap:8px;padding:20px 0}
+.p-card{padding:14px 16px;min-width:100px}
+.p-1 .p-card{min-width:120px;padding:18px 20px}
+.st-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.rank-table th,.rank-table td{padding:6px 8px;font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}*{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="h-title">
+      <h1><span class="trophy">🏆</span><span data-i18n="scoreboardTitle">PK计分大屏</span></h1>
+      <div class="h-sub"><span class="dot"></span><span data-i18n="scoreboardSub">实时排行榜</span> · <span data-i18n="lastUpdated">最后更新</span>: <span id="updTime">--</span></div>
+    </div>
+    <div class="h-actions">
+      <div class="nav-links">
+        <a href="input.html">📝 <span data-i18n="goToInput">去录入</span></a>
+        <a href="detail.html">📊 <span data-i18n="viewDetails">查看明细</span></a>
+      </div>
+      <button class="lang-btn" id="langBtn">🌐 <span id="langLabel">English</span></button>
+    </div>
+  </header>
+
+  <div class="podium" id="podium"></div>
+
+  <div class="rank-section">
+    <div class="section-title"><span class="icon">📊</span> <span data-i18n="fullRanking">完整排名</span></div>
+    <div class="rank-table">
+      <table>
+        <thead><tr>
+          <th data-i18n="rank">#</th>
+          <th data-i18n="team">队伍</th>
+          <th data-i18n="record">战绩</th>
+          <th data-i18n="score">积分</th>
+        </tr></thead>
+        <tbody id="rankBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="stations-section">
+    <div class="section-title"><span class="icon">🏟️</span> <span data-i18n="stationMatches">站点对阵</span></div>
+    <div class="st-grid" id="stGrid"></div>
+  </div>
+
+  <footer><span data-i18n="footerNote">数据每30秒自动刷新 · kvdb.io 云端存储</span></footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== CONFIG =====
+const KVDB='https://kvdb.io/6e4nxh1KpHpJjHUZT3h5vx/pk_scoreboard';
+const POLL=30000;
+
+// ===== I18N =====
+let LANG=localStorage.getItem('pk-lang')||'zh';
+const T={
+zh:{scoreboardTitle:'PK计分大屏',scoreboardSub:'实时排行榜',lastUpdated:'最后更新',goToInput:'去录入',viewDetails:'查看明细',fullRanking:'完整排名',stationMatches:'站点对阵',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',rank:'#',team:'队伍',record:'战绩',score:'积分',champion:'冠军',runnerUp:'亚军',thirdPlace:'季军',wins:'胜',draws:'平',losses:'负',noMatch:'等待录入',win:'胜',draw:'平局',matchCount:'场',refreshed:'数据已刷新',langLabel:'English',stationName:id=>id+'号站',teamName:id=>id+'队',timeAgo:s=>s+'秒前'},
+en:{scoreboardTitle:'PK Scoreboard',scoreboardSub:'Real-time Leaderboard',lastUpdated:'Updated',goToInput:'Input',viewDetails:'Details',fullRanking:'Full Ranking',stationMatches:'Station Matches',footerNote:'Auto-refresh every 30s · kvdb.io cloud',rank:'#',team:'Team',record:'Record',score:'Pts',champion:'Champion',runnerUp:'Runner-up',thirdPlace:'3rd Place',wins:'W',draws:'D',losses:'L',noMatch:'Awaiting',win:'Win',draw:'Draw',matchCount:'matches',refreshed:'Refreshed',langLabel:'中文',stationName:id=>'Station '+id,teamName:id=>'Team '+id,timeAgo:s=>s+'s ago'}
+};
+function t(k){const v=T[LANG][k];return typeof v==='function'?v:v||k}
+function tn(id){return T[LANG].teamName(id)}
+function sn(id){return T[LANG].stationName(id)}
+
+function toggleLang(){LANG=LANG==='zh'?'en':'zh';localStorage.setItem('pk-lang',LANG);applyI18n();render()}
+function applyI18n(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});document.getElementById('langLabel').textContent=t('langLabel');document.title=LANG==='zh'?'PK计分大屏':'PK Scoreboard'}
+
+// ===== DATA =====
+function getDefault(){
+  return{teams:Array.from({length:22},(_,i)=>({id:i+1,score:0,wins:0,draws:0,losses:0})),
+  stations:Array.from({length:11},(_,i)=>({id:i+1})),
+  matches:[],updatedAt:Date.now()}
+}
+
+function compute(d){
+  d.teams.forEach(t=>{t.score=0;t.wins=0;t.draws=0;t.losses=0});
+  d.matches.forEach(m=>{
+    const a=d.teams.find(t=>t.id===m.team1Id),b=d.teams.find(t=>t.id===m.team2Id);
+    if(!a||!b)return;
+    if(m.result==='team1'){a.wins++;a.score+=3;b.losses++}
+    else if(m.result==='team2'){b.wins++;b.score+=3;a.losses++}
+    else{a.draws++;a.score+=1;b.draws++;b.score+=1}
+  })
+}
+
+let DB=null,lastFetch=0;
+async function fetchCloud(){
+  try{const r=await fetch(KVDB);if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
+}
+async function pushCloud(d){d.updatedAt=Date.now();compute(d);try{const r=await fetch(KVDB,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok}catch(e){return false}}
+
+async function loadData(){
+  const c=await fetchCloud();
+  if(c&&c.teams&&c.matches){DB=c;compute(DB)}
+  else{DB=getDefault()}
+  lastFetch=DB.updatedAt||Date.now();
+  render();updTimeEl()
+}
+
+function updTimeEl(){
+  const diff=Math.round((Date.now()-lastFetch)/1000);
+  document.getElementById('updTime').textContent=t('timeAgo')(diff>0?diff:0)
+}
+
+// ===== RENDER =====
+function render(){
+  if(!DB)return;
+  const sorted=[...DB.teams].sort((a,b)=>b.score-a.score||b.wins-a.wins||a.id-b.id);
+  renderPodium(sorted);renderRankTable(sorted);renderStations()
+}
+
+function renderPodium(sorted){
+  const p=document.getElementById('podium');
+  const medals=['🥇','🥈','🥉'];
+  const labels=['champion','runnerUp','thirdPlace'];
+  const cls=['p-1','p-2','p-3'];
+  let html='';
+  for(let i=0;i<3;i++){
+    const tm=sorted[i];
+    if(!tm)continue;
+    html+=`<div class="${cls[i]}"><div class="p-card">
+      <div class="p-medal">${medals[i]} <span style="font-size:.7rem;opacity:.7">${t(labels[i])}</span></div>
+      <div class="p-name">${tn(tm.id)}</div>
+      <div class="p-score">${tm.score}</div>
+      <div class="p-stat">${tm.wins}${t('wins')} ${tm.draws}${t('draws')} ${tm.losses}${t('losses')}</div>
+    </div></div>`
+  }
+  p.innerHTML=html
+}
+
+function renderRankTable(sorted){
+  const tb=document.getElementById('rankBody');
+  let html='';
+  sorted.forEach((tm,i)=>{
+    const rc=i<3?'top'+(i+1):'';
+    html+=`<tr>
+      <td class="r-num ${rc}">${i+1}</td>
+      <td class="r-team">${tn(tm.id)}</td>
+      <td class="r-wdl"><span class="w">${tm.wins}${t('wins')}</span> <span class="d">${tm.draws}${t('draws')}</span> <span class="l">${tm.losses}${t('losses')}</span></td>
+      <td class="r-score ${rc}">${tm.score}</td>
+    </tr>`
+  });
+  tb.innerHTML=html
+}
+
+function renderStations(){
+  const g=document.getElementById('stGrid');
+  let html='';
+  for(let i=1;i<=11;i++){
+    const sm=DB.matches.filter(m=>m.stationId===i);
+    const last=sm.length>0?sm[sm.length-1]:null;
+    let resText='',resCls='none',vsText='';
+    if(last){
+      vsText=`${tn(last.team1Id)} <span class="vs-badge">VS</span> ${tn(last.team2Id)}`;
+      if(last.result==='team1'){resText=tn(last.team1Id)+' '+t('win');resCls='win'}
+      else if(last.result==='team2'){resText=tn(last.team2Id)+' '+t('win');resCls='win'}
+      else{resText=t('draw');resCls='draw'}
+    }else{
+      vsText=`<span style="color:var(--td);opacity:.5">${t('noMatch')}</span>`;
+      resText=t('noMatch')
+    }
+    html+=`<div class="st-card">
+      <div class="st-name">${sn(i)}</div>
+      <div class="st-vs">${vsText}</div>
+      <div class="st-result ${resCls}">${resText}</div>
+      <div class="st-count">${sm.length} ${t('matchCount')}</div>
+    </div>`
+  }
+  g.innerHTML=html
+}
+
+// ===== TOAST =====
+function showToast(msg,type='success'){
+  const el=document.getElementById('toast');el.textContent=msg;el.className='toast '+type+' show';
+  setTimeout(()=>{el.classList.remove('show')},2500)
+}
+
+// ===== EVENT DELEGATION =====
+document.getElementById('langBtn').addEventListener('click',()=>toggleLang());
+
+// ===== INIT =====
+applyI18n();loadData();
+setInterval(()=>{loadData().then(()=>updTimeEl())},POLL);
+setInterval(updTimeEl,1000);
+</script>
+</body>
+</html>

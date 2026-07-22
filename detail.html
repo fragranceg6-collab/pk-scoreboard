@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sports Night</title>
+<style>
+:root{--bd:#0a1e5c;--bm:#1a3a8c;--gd:#075c30;--gm:#0a8c4a;--gl:#1ddb7a;--w:#fff;--gf:#ffd700;--gb:rgba(255,255,255,.1);--gbr:rgba(255,255,255,.2);--tl:#fff;--td:rgba(255,255,255,.7);--rd:rgba(255,60,60,.85);--gn:rgba(29,219,122,.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 25%,rgba(29,219,122,.12) 0%,transparent 50%),radial-gradient(circle at 85% 75%,rgba(10,30,92,.25) 0%,transparent 50%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:20px 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:16px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);margin-bottom:24px}
+.h-title h1{font-size:1.5rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.h-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.lang-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gbr);background:rgba(255,255,255,.05);color:var(--tl);cursor:pointer;font-size:.85rem;transition:all .2s}
+.lang-btn:hover{background:rgba(255,255,255,.15)}
+.nav-links{display:flex;gap:8px}
+.nav-links a{padding:6px 14px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--tl);text-decoration:none;font-size:.85rem;border:1px solid var(--gbr);transition:all .2s;display:flex;align-items:center;gap:4px}
+.nav-links a:hover{background:rgba(255,255,255,.2)}
+/* Filters */
+.filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filters label{font-size:.85rem;color:var(--td);font-weight:600}
+.filters select{padding:8px 12px;border-radius:10px;background:var(--gb);border:1px solid var(--gbr);color:var(--tl);font-size:.85rem;cursor:pointer;backdrop-filter:blur(8px)}
+.filters select:focus{border-color:var(--gl);outline:none}
+.filters select option{background:#1a3a8c;color:#fff}
+/* Summary Stats */
+.summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:20px}
+.sum-card{padding:14px;border-radius:12px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);text-align:center}
+.sum-card .sum-label{font-size:.7rem;color:var(--td);margin-bottom:4px}
+.sum-card .sum-val{font-size:1.4rem;font-weight:700}
+.sum-card .sum-val.green{color:var(--gl)}.sum-card .sum-val.gold{color:var(--gf)}
+/* Match Table */
+.detail-table{width:100%;border-radius:12px;overflow:hidden;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);margin-bottom:20px}
+.detail-table table{width:100%;border-collapse:collapse}
+.detail-table th{padding:10px 12px;font-size:.8rem;color:var(--td);text-align:left;border-bottom:1px solid rgba(255,255,255,.1);font-weight:600}
+.detail-table td{padding:10px 12px;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.detail-table tr:last-child td{border-bottom:none}
+.detail-table tr:hover td{background:rgba(255,255,255,.05)}
+.d-time{color:var(--td);font-size:.8rem;white-space:nowrap}
+.d-station{font-weight:600;font-size:.85rem}
+.d-vs{display:flex;align-items:center;gap:6px;font-weight:600}
+.d-vs .vs-sm{font-size:.65rem;padding:1px 4px;border-radius:4px;background:rgba(255,215,0,.2);color:var(--gf);font-weight:700}
+.d-result{font-weight:600}.d-result.win{color:var(--gn)}.d-result.draw{color:#ffb74d}
+.d-pts{font-size:.8rem;color:var(--td);white-space:nowrap}
+.d-pts .pt-win{color:var(--gn);font-weight:600}.d-pts .pt-draw{color:#ffb74d}
+.empty-msg{text-align:center;padding:40px;color:var(--td);font-size:.9rem}
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:12px;font-size:.85rem;z-index:1000;transition:transform .3s;backdrop-filter:blur(12px)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:rgba(29,219,122,.9);color:#fff}
+footer{text-align:center;padding:12px;font-size:.7rem;color:var(--td)}
+@media(max-width:640px){
+header{flex-direction:column;gap:12px;text-align:center}
+.h-actions{justify-content:center;flex-wrap:wrap}
+.filters{flex-direction:column;align-items:flex-start}
+.summary{grid-template-columns:repeat(2,1fr)}
+.detail-table th,.detail-table td{padding:6px 8px;font-size:.8rem}
+.d-vs{gap:4px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="h-title"><h1>🏆 <span data-i18n="detailTitle">Sports Night</span></h1></div>
+    <div class="h-actions">
+      <div class="nav-links">
+        <a href="index.html">🏠 <span data-i18n="backToBoard">返回大屏</span></a>
+        <a href="input.html">📝 <span data-i18n="goToInput">去录入</span></a>
+      </div>
+      <button class="lang-btn" id="langBtn">🌐 <span id="langLabel">English</span></button>
+    </div>
+  </header>
+
+  <div class="filters">
+    <label data-i18n="stationFilter">站点：</label>
+    <select id="filterSt">
+      <option value="" data-i18n="allStations">全部站点</option>
+    </select>
+    <label data-i18n="teamFilter">队伍：</label>
+    <select id="filterTm">
+      <option value="" data-i18n="allTeams">全部队伍</option>
+    </select>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="detail-table">
+    <table>
+      <thead><tr>
+        <th data-i18n="time">时间</th>
+        <th data-i18n="station">站点</th>
+        <th data-i18n="match">对阵</th>
+        <th data-i18n="result">结果</th>
+        <th data-i18n="points">得分</th>
+      </tr></thead>
+      <tbody id="matchBody"></tbody>
+    </table>
+  </div>
+
+  <footer><span data-i18n="footerNote">数据每30秒自动刷新 · kvdb.io 云端存储</span></footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== CONFIG =====
+const KVDB='https://kvdb.io/6e4nxh1KpHpJjHUZT3h5vx/pk_scoreboard';
+const POLL=30000;
+
+// ===== I18N =====
+let LANG=localStorage.getItem('pk-lang')||'zh';
+const T={
+zh:{detailTitle:'Sports Night',backToBoard:'返回大屏',goToInput:'去录入',stationFilter:'站点：',teamFilter:'队伍：',allStations:'全部站点',allTeams:'全部队伍',time:'时间',station:'站点',match:'对阵',result:'结果',points:'得分',totalMatches:'总比赛数',totalWins:'总胜场',totalDraws:'总平场',noMatches:'暂无比赛记录',langLabel:'English',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',stationName:id=>id+'号站',teamName:id=>id+'队',win:'胜',draw:'平局',team1Win:id=>id+'队胜',team2Win:id=>id+'队胜',pts3:'+3',pts0:'+0',pts1:'+1',timeFormat:ts=>{const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}},
+en:{detailTitle:'Sports Night',backToBoard:'Board',goToInput:'Input',stationFilter:'Station:',teamFilter:'Team:',allStations:'All Stations',allTeams:'All Teams',time:'Time',station:'Station',match:'Match',result:'Result',points:'Pts',totalMatches:'Matches',totalWins:'Wins',totalDraws:'Draws',noMatches:'No matches yet',langLabel:'中文',footerNote:'Auto-refresh every 30s · kvdb.io cloud',stationName:id=>'Stn '+id,teamName:id=>'Team '+id,win:'Win',draw:'Draw',team1Win:id=>'Team '+id+' wins',team2Win:id=>'Team '+id+' wins',pts3:'+3',pts0:'+0',pts1:'+1',timeFormat:ts=>{const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}}
+};
+function t(k){const v=T[LANG][k];return typeof v==='function'?v:v||k}
+function tn(id){return T[LANG].teamName(id)}
+function sn(id){return T[LANG].stationName(id)}
+
+function toggleLang(){LANG=LANG==='zh'?'en':'zh';localStorage.setItem('pk-lang',LANG);applyI18n();buildFilters();renderTable();renderSummary()}
+function applyI18n(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});document.getElementById('langLabel').textContent=t('langLabel');document.title='Sports Night'}
+
+// ===== DATA =====
+function getDefault(){
+  return{teams:Array.from({length:22},(_,i)=>({id:i+1,score:0,wins:0,draws:0,losses:0})),
+  stations:Array.from({length:11},(_,i)=>({id:i+1})),
+  matches:[],updatedAt:Date.now()}
+}
+function compute(d){
+  d.teams.forEach(t=>{t.score=0;t.wins=0;t.draws=0;t.losses=0});
+  d.matches.forEach(m=>{
+    const a=d.teams.find(t=>t.id===m.team1Id),b=d.teams.find(t=>t.id===m.team2Id);
+    if(!a||!b)return;
+    if(m.result==='team1'){a.wins++;a.score+=3;b.losses++}
+    else if(m.result==='team2'){b.wins++;b.score+=3;a.losses++}
+    else{a.draws++;a.score+=1;b.draws++;b.score+=1}
+  })
+}
+
+let DB=null;
+async function fetchCloud(){
+  try{const r=await fetch(KVDB);if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
+}
+async function loadData(){
+  const c=await fetchCloud();
+  if(c&&c.teams&&c.matches){DB=c;compute(DB)}
+  else{DB=getDefault()}
+  buildFilters();renderSummary();renderTable()
+}
+
+// ===== FILTERS =====
+function buildFilters(){
+  if(!DB)return;
+  const fSt=document.getElementById('filterSt');
+  let html=`<option value="">${t('allStations')}</option>`;
+  DB.stations.forEach(st=>{html+=`<option value="${st.id}">${sn(st.id)}</option>`});
+  fSt.innerHTML=html;
+  const fTm=document.getElementById('filterTm');
+  let thtml=`<option value="">${t('allTeams')}</option>`;
+  DB.teams.forEach(tm=>{thtml+=`<option value="${tm.id}">${tn(tm.id)}</option>`});
+  fTm.innerHTML=thtml
+}
+
+// ===== SUMMARY =====
+function renderSummary(){
+  if(!DB)return;
+  const total=DB.matches.length;
+  const wins=DB.matches.filter(m=>m.result==='team1'||m.result==='team2').length;
+  const draws=DB.matches.filter(m=>m.result==='draw').length;
+  const s=document.getElementById('summary');
+  s.innerHTML=`<div class="sum-card"><div class="sum-label">${t('totalMatches')}</div><div class="sum-val green">${total}</div></div>
+  <div class="sum-card"><div class="sum-label">${t('totalWins')}</div><div class="sum-val gold">${wins}</div></div>
+  <div class="sum-card"><div class="sum-label">${t('totalDraws')}</div><div class="sum-val">${draws}</div></div>`
+}
+
+// ===== TABLE =====
+function renderTable(){
+  if(!DB)return;
+  const fSt=document.getElementById('filterSt').value;
+  const fTm=document.getElementById('filterTm').value;
+  let filtered=DB.matches;
+  if(fSt)filtered=filtered.filter(m=>m.stationId==fSt);
+  if(fTm)filtered=filtered.filter(m=>m.team1Id==fTm||m.team2Id==fTm);
+  filtered.sort((a,b)=>b.timestamp-a.timestamp);
+  const tb=document.getElementById('matchBody');
+  if(filtered.length===0){
+    tb.innerHTML=`<tr><td colspan="5" class="empty-msg">${t('noMatches')}</td></tr>`;
+    return
+  }
+  let html='';
+  filtered.forEach(m=>{
+    const st=DB.stations.find(s=>s.id===m.stationId);
+    let resText='',resCls='win',ptsHtml='';
+    if(m.result==='team1'){
+      resText=T[LANG].team1Win(m.team1Id);resCls='win';
+      ptsHtml=`<span class="pt-win">${tn(m.team1Id)} ${t('pts3')}</span> · ${tn(m.team2Id)} ${t('pts0')}`
+    }else if(m.result==='team2'){
+      resText=T[LANG].team2Win(m.team2Id);resCls='win';
+      ptsHtml=`${tn(m.team1Id)} ${t('pts0')} · <span class="pt-win">${tn(m.team2Id)} ${t('pts3')}</span>`
+    }else{
+      resText=t('draw');resCls='draw';
+      ptsHtml=`<span class="pt-draw">${tn(m.team1Id)} ${t('pts1')}</span> · <span class="pt-draw">${tn(m.team2Id)} ${t('pts1')}</span>`
+    }
+    html+=`<tr>
+      <td class="d-time">${T[LANG].timeFormat(m.timestamp)}</td>
+      <td class="d-station">${sn(m.stationId)}</td>
+      <td class="d-vs">${tn(m.team1Id)} <span class="vs-sm">VS</span> ${tn(m.team2Id)}</td>
+      <td class="d-result ${resCls}">${resText}</td>
+      <td class="d-pts">${ptsHtml}</td>
+    </tr>`
+  });
+  tb.innerHTML=html
+}
+
+// ===== TOAST =====
+function showToast(msg,type='success'){
+  const el=document.getElementById('toast');el.textContent=msg;el.className='toast '+type+' show';
+  setTimeout(()=>{el.classList.remove('show')},2500)
+}
+
+// ===== EVENT DELEGATION =====
+document.getElementById('langBtn').addEventListener('click',()=>toggleLang());
+document.getElementById('filterSt').addEventListener('change',()=>renderTable());
+document.getElementById('filterTm').addEventListener('change',()=>renderTable());
+
+// ===== INIT =====
+applyI18n();loadData();
+setInterval(loadData,POLL);
+</script>
+</body>
+</html>
