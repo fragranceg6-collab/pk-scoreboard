@@ -18,6 +18,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .nav-links{display:flex;gap:8px}
 .nav-links a{padding:6px 14px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--tl);text-decoration:none;font-size:.85rem;border:1px solid var(--gbr);transition:all .2s;display:flex;align-items:center;gap:4px}
 .nav-links a:hover{background:rgba(255,255,255,.2)}
+.week-badge{padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,var(--gf),#ff9500);color:#0a1e5c;font-size:.75rem;font-weight:700;white-space:nowrap;flex-shrink:0}
 /* Filters */
 .filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .filters label{font-size:.85rem;color:var(--td);font-weight:600}
@@ -66,6 +67,7 @@ header{flex-direction:column;gap:12px;text-align:center}
   <header>
     <div class="h-title"><h1>🏆 <span data-i18n="detailTitle">Sports Night</span></h1></div>
     <div class="h-actions">
+      <span class="week-badge">2026 Orientation Week</span>
       <div class="nav-links">
         <a href="index.html">🏠 <span data-i18n="backToBoard">返回大屏</span></a>
         <a href="input.html">📝 <span data-i18n="goToInput">去录入</span></a>
@@ -113,8 +115,8 @@ const POLL=30000;
 // ===== I18N =====
 let LANG=localStorage.getItem('pk-lang')||'zh';
 const T={
-zh:{detailTitle:'Sports Night',backToBoard:'返回大屏',goToInput:'去录入',stationFilter:'站点：',teamFilter:'队伍：',allStations:'全部站点',allTeams:'全部队伍',time:'时间',station:'站点',match:'对阵',result:'结果',points:'得分',totalMatches:'总比赛数',totalWins:'总胜场',totalDraws:'总平场',noMatches:'暂无比赛记录',langLabel:'English',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',stationName:id=>id+'号站',teamName:id=>id+'队',win:'胜',draw:'平局',team1Win:id=>id+'队胜',team2Win:id=>id+'队胜',pts3:'+3',pts0:'+0',pts1:'+1',timeFormat:ts=>{const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}},
-en:{detailTitle:'Sports Night',backToBoard:'Board',goToInput:'Input',stationFilter:'Station:',teamFilter:'Team:',allStations:'All Stations',allTeams:'All Teams',time:'Time',station:'Station',match:'Match',result:'Result',points:'Pts',totalMatches:'Matches',totalWins:'Wins',totalDraws:'Draws',noMatches:'No matches yet',langLabel:'中文',footerNote:'Auto-refresh every 30s · kvdb.io cloud',stationName:id=>'Stn '+id,teamName:id=>'Team '+id,win:'Win',draw:'Draw',team1Win:id=>'Team '+id+' wins',team2Win:id=>'Team '+id+' wins',pts3:'+3',pts0:'+0',pts1:'+1',timeFormat:ts=>{const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}}
+zh:{detailTitle:'Sports Night',backToBoard:'返回大屏',goToInput:'去录入',stationFilter:'站点：',teamFilter:'队伍：',allStations:'全部站点',allTeams:'全部队伍',time:'时间',station:'站点',match:'对阵',result:'结果',points:'得分',totalMatches:'总比赛数',totalWins:'总胜场',totalDraws:'总平场',noMatches:'暂无比赛记录',langLabel:'English',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',stationName:id=>id+'号站',teamName:id=>id+'队',win:'胜',draw:'平局',team1Win:id=>id+'队胜',team2Win:id=>id+'队胜',pts3:'+2',pts0:'+0',pts1:'+1',timeFormat:ts=>{const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}},
+en:{detailTitle:'Sports Night',backToBoard:'Board',goToInput:'Input',stationFilter:'Station:',teamFilter:'Team:',allStations:'All Stations',allTeams:'All Teams',time:'Time',station:'Station',match:'Match',result:'Result',points:'Pts',totalMatches:'Matches',totalWins:'Wins',totalDraws:'Draws',noMatches:'No matches yet',langLabel:'中文',footerNote:'Auto-refresh every 30s · kvdb.io cloud',stationName:id=>'Stn '+id,teamName:id=>'Team '+id,win:'Win',draw:'Draw',team1Win:id=>'Team '+id+' wins',team2Win:id=>'Team '+id+' wins',pts3:'+2',pts0:'+0',pts1:'+1',timeFormat:ts=>{const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')+':'+d.getSeconds().toString().padStart(2,'0')}}
 };
 function t(k){const v=T[LANG][k];return typeof v==='function'?v:v||k}
 function tn(id){return T[LANG].teamName(id)}
@@ -134,8 +136,8 @@ function compute(d){
   d.matches.forEach(m=>{
     const a=d.teams.find(t=>t.id===m.team1Id),b=d.teams.find(t=>t.id===m.team2Id);
     if(!a||!b)return;
-    if(m.result==='team1'){a.wins++;a.score+=3;b.losses++}
-    else if(m.result==='team2'){b.wins++;b.score+=3;a.losses++}
+    if(m.result==='team1'){a.wins++;a.score+=2;b.losses++}
+    else if(m.result==='team2'){b.wins++;b.score+=2;a.losses++}
     else{a.draws++;a.score+=1;b.draws++;b.score+=1}
   })
 }
