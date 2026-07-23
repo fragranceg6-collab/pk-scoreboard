@@ -24,6 +24,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .nav-links{display:flex;gap:8px}
 .nav-links a{padding:6px 14px;border-radius:12px;background:rgba(255,255,255,.08);color:var(--tl);text-decoration:none;font-size:.85rem;border:1px solid var(--gbr);transition:all .2s;display:flex;align-items:center;gap:4px}
 .nav-links a:hover{background:rgba(255,255,255,.2)}
+.week-badge{padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,var(--gf),#ff9500);color:#0a1e5c;font-size:.75rem;font-weight:700;white-space:nowrap;flex-shrink:0}
 /* Podium */
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:16px;padding:40px 0 20px;margin-bottom:28px}
 .p-card{border-radius:16px;background:var(--gb);backdrop-filter:blur(12px);border:2px solid var(--gbr);padding:20px 24px;text-align:center;transition:all .3s;min-width:140px}
@@ -95,6 +96,7 @@ header{flex-direction:column;gap:12px;text-align:center}
       <div class="h-sub"><span class="dot"></span><span data-i18n="scoreboardSub">实时排行榜</span> · <span data-i18n="lastUpdated">最后更新</span>: <span id="updTime">--</span></div>
     </div>
     <div class="h-actions">
+      <span class="week-badge">2026 Orientation Week</span>
       <div class="nav-links">
         <a href="input.html">📝 <span data-i18n="goToInput">去录入</span></a>
         <a href="detail.html">📊 <span data-i18n="viewDetails">查看详细比分</span></a>
@@ -160,8 +162,8 @@ function compute(d){
   d.matches.forEach(m=>{
     const a=d.teams.find(t=>t.id===m.team1Id),b=d.teams.find(t=>t.id===m.team2Id);
     if(!a||!b)return;
-    if(m.result==='team1'){a.wins++;a.score+=3;b.losses++}
-    else if(m.result==='team2'){b.wins++;b.score+=3;a.losses++}
+    if(m.result==='team1'){a.wins++;a.score+=2;b.losses++}
+    else if(m.result==='team2'){b.wins++;b.score+=2;a.losses++}
     else{a.draws++;a.score+=1;b.draws++;b.score+=1}
   })
 }
