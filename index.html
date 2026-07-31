@@ -170,7 +170,7 @@ function compute(d){
 
 let DB=null,lastFetch=0;
 async function fetchCloud(){
-  try{const r=await fetch(KVDB);if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
+  try{const r=await fetch(KVDB,{cache:'no-store'});if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
 }
 async function pushCloud(d){d.updatedAt=Date.now();compute(d);try{const r=await fetch(KVDB,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok}catch(e){return false}}
 
