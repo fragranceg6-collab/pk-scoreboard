@@ -144,7 +144,7 @@ function compute(d){
 
 let DB=null;
 async function fetchCloud(){
-  try{const r=await fetch(KVDB);if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
+  try{const r=await fetch(KVDB,{cache:'no-store'});if(!r.ok)return null;const txt=await r.text();if(!txt||txt==='null')return null;return JSON.parse(txt)}catch(e){return null}
 }
 async function loadData(){
   const c=await fetchCloud();
