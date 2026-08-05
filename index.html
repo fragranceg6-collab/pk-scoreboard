@@ -7,7 +7,7 @@
 <style>
 :root{--bd:#0a1e5c;--bm:#1a3a8c;--gd:#075c30;--gm:#0a8c4a;--gl:#1ddb7a;--w:#fff;--gf:#ffd700;--sf:#c0c0c0;--bf:#cd7f32;--gb:rgba(255,255,255,.1);--gbr:rgba(255,255,255,.2);--tl:#fff;--td:rgba(255,255,255,.7);--rd:rgba(255,60,60,.85);--gn:rgba(29,219,122,.85)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative;overflow-wrap:break-word;word-break:break-word}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative;overflow-wrap:break-word}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 25%,rgba(29,219,122,.12) 0%,transparent 50%),radial-gradient(circle at 85% 75%,rgba(10,30,92,.25) 0%,transparent 50%),repeating-linear-gradient(45deg,transparent,transparent 60px,rgba(255,255,255,.02) 60px,rgba(255,255,255,.02) 61px);pointer-events:none;z-index:0}
 .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:20px 16px}
 /* Header */
@@ -16,8 +16,10 @@ header{display:flex;flex-direction:column;gap:14px;padding:16px 20px;border-radi
 .h-title h1{font-size:clamp(1.25rem,1rem + 2.2vw,1.8rem);font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.25}
 .h-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
 .h-title h1 .trophy{font-size:1.6rem}
-.h-sub{font-size:.85rem;color:var(--td);margin-top:4px;display:flex;align-items:center;gap:8px}
-.h-sub .dot{width:6px;height:6px;border-radius:50%;background:var(--gl);display:inline-block;animation:pulse 2s infinite}
+.h-sub{font-size:.85rem;color:var(--td);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.h-sub-text{flex:1;min-width:0}
+.nowrap{white-space:nowrap}
+.h-sub .dot{width:6px;height:6px;border-radius:50%;background:var(--gl);display:inline-block;animation:pulse 2s infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .h-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .lang-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--gbr);background:rgba(255,255,255,.05);color:var(--tl);cursor:pointer;font-size:.85rem;transition:all .2s;white-space:nowrap}
@@ -79,6 +81,7 @@ footer{text-align:center;padding:12px;font-size:.7rem;color:var(--td)}
 /* Responsive */
 @media(max-width:640px){
 header{gap:12px;text-align:center}
+.h-sub{font-size:clamp(.72rem,.66rem + .8vw,.85rem);text-align:left}
 .h-actions{justify-content:center}
 .podium{gap:6px;padding:16px 0;flex-wrap:wrap}
 .p-card{padding:12px 6px;min-width:0;flex:1 1 0}
@@ -100,7 +103,7 @@ header{gap:12px;text-align:center}
     <div class="h-top">
       <div class="h-title">
         <h1><span class="trophy">🏆</span><span data-i18n="scoreboardTitle">Summer Sports Night: Ignite Your Orientation</span></h1>
-        <div class="h-sub"><span class="dot"></span><span data-i18n="scoreboardSub">实时排行榜</span> · <span data-i18n="lastUpdated">最后更新</span>: <span id="updTime">--</span></div>
+        <div class="h-sub"><span class="dot"></span><span class="h-sub-text"><span data-i18n="scoreboardSub">实时排行榜</span> · <span class="nowrap" data-i18n="lastUpdated">最后更新</span>: <span id="updTime">--</span></span></div>
       </div>
       <span class="week-badge">2026 Orientation Week</span>
     </div>
