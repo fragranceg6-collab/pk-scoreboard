@@ -7,7 +7,7 @@
 <style>
 :root{--bd:#0a1e5c;--bm:#1a3a8c;--gd:#075c30;--gm:#0a8c4a;--gl:#1ddb7a;--w:#fff;--gf:#ffd700;--sf:#c0c0c0;--bf:#cd7f32;--gb:rgba(255,255,255,.1);--gbr:rgba(255,255,255,.2);--tl:#fff;--td:rgba(255,255,255,.7);--rd:rgba(255,60,60,.85);--gn:rgba(29,219,122,.85)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative;overflow-wrap:break-word}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bd),var(--gd));color:var(--tl);min-height:100vh;position:relative}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 25%,rgba(29,219,122,.12) 0%,transparent 50%),radial-gradient(circle at 85% 75%,rgba(10,30,92,.25) 0%,transparent 50%),repeating-linear-gradient(45deg,transparent,transparent 60px,rgba(255,255,255,.02) 60px,rgba(255,255,255,.02) 61px);pointer-events:none;z-index:0}
 .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:20px 16px}
 /* Header */
@@ -66,7 +66,7 @@ header{display:flex;flex-direction:column;gap:14px;padding:16px 20px;border-radi
 .st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 .st-card{border-radius:12px;background:var(--gb);backdrop-filter:blur(12px);border:1px solid var(--gbr);padding:14px;text-align:center;transition:all .2s;cursor:default}
 .st-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
-.st-name{font-size:.75rem;color:var(--td);margin-bottom:6px;font-weight:600}
+.st-name{font-size:.75rem;color:var(--td);margin-bottom:6px;font-weight:600;word-break:keep-all}
 .st-vs{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.85rem;font-weight:600;margin-bottom:6px}
 .st-vs .vs-badge{font-size:.6rem;padding:2px 6px;border-radius:8px;background:rgba(255,215,0,.2);color:var(--gf);font-weight:700}
 .st-result{font-size:.8rem;font-weight:600;margin-bottom:4px}
@@ -153,8 +153,8 @@ const POLL=30000;
 let LANG=localStorage.getItem('pk-lang')||'zh';
 const STATION_NAMES={1:'Egg and Spoon Relay',2:'Legacy Football Relay',3:'Tube Pass Challenge',4:'Badminton Color Zone Target Toss',5:'Race to Shoot!',6:"Don't Let the Balloon Fall",7:'Mystery Whack',8:'Ring the Goose!',9:'Hula Hoop Pass Challenge',10:'Cup Stack',11:'Balloon Caterpillar'};
 const T={
-zh:{scoreboardTitle:'Summer Sports Night: Ignite Your Orientation',scoreboardSub:'实时排行榜',lastUpdated:'最后更新',goToInput:'去录入',viewDetails:'查看详细比分',fullRanking:'完整排名',stationMatches:'站点对阵',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',rank:'#',team:'队伍',record:'战绩',score:'积分',champion:'冠军',runnerUp:'亚军',thirdPlace:'季军',wins:'胜',draws:'平',losses:'负',noMatch:'等待录入',win:'胜',draw:'平局',matchCount:'场',refreshed:'数据已刷新',langLabel:'English',stationName:id=>STATION_NAMES[id],teamName:id=>id+'队',timeAgo:s=>s+'秒前'},
-en:{scoreboardTitle:'Summer Sports Night: Ignite Your Orientation',scoreboardSub:'Real-time Leaderboard',lastUpdated:'Updated',goToInput:'Input',viewDetails:'Detailed Scores',fullRanking:'Full Ranking',stationMatches:'Station Matches',footerNote:'Auto-refresh every 30s · kvdb.io cloud',rank:'#',team:'Team',record:'Record',score:'Pts',champion:'Champion',runnerUp:'Runner-up',thirdPlace:'3rd Place',wins:'W',draws:'D',losses:'L',noMatch:'Awaiting',win:'Win',draw:'Draw',matchCount:'matches',refreshed:'Refreshed',langLabel:'中文',stationName:id=>STATION_NAMES[id],teamName:id=>'Team '+id,timeAgo:s=>s+'s ago'}
+zh:{scoreboardTitle:'Summer Sports Night: Ignite Your Orientation',scoreboardSub:'实时排行榜',lastUpdated:'最后更新',goToInput:'去录入',viewDetails:'查看详细比分',fullRanking:'完整排名',stationMatches:'站点对阵',footerNote:'数据每30秒自动刷新 · kvdb.io 云端存储',rank:'#',team:'队伍',record:'战绩',score:'积分',champion:'冠军',runnerUp:'亚军',thirdPlace:'季军',wins:'胜',draws:'平',losses:'负',noMatch:'等待录入',win:'胜',draw:'平局',matchCount:'场',refreshed:'数据已刷新',langLabel:'English',stationName:id=>id+'. '+STATION_NAMES[id],teamName:id=>id+'队',timeAgo:s=>s+'秒前'},
+en:{scoreboardTitle:'Summer Sports Night: Ignite Your Orientation',scoreboardSub:'Real-time Leaderboard',lastUpdated:'Updated',goToInput:'Input',viewDetails:'Detailed Scores',fullRanking:'Full Ranking',stationMatches:'Station Matches',footerNote:'Auto-refresh every 30s · kvdb.io cloud',rank:'#',team:'Team',record:'Record',score:'Pts',champion:'Champion',runnerUp:'Runner-up',thirdPlace:'3rd Place',wins:'W',draws:'D',losses:'L',noMatch:'Awaiting',win:'Win',draw:'Draw',matchCount:'matches',refreshed:'Refreshed',langLabel:'中文',stationName:id=>id+'. '+STATION_NAMES[id],teamName:id=>'Team '+id,timeAgo:s=>s+'s ago'}
 };
 function t(k){const v=T[LANG][k];return typeof v==='function'?v:v||k}
 function tn(id){return T[LANG].teamName(id)}
